@@ -84,7 +84,8 @@ func main() {
                     } else {
                         post.frontmatter.setPubDate(rss.Channels[i].Items[j].PublishDate)
                     }
-                    post.setContent(rss.Channels[i].Items[j].Content)
+                    post.setContent(rss.Channels[i].Items[j].Content, "--from=textile", "--to=html")
+                    post.setContent(rss.Channels[i].Items[j].Content, "--from=html", "--to=markdown")
                     post.frontmatter.setSlug(rss.Channels[i].Items[j].Slug)
                     post.frontmatter.Date = rss.Channels[i].Items[j].Date
                     check(err)
@@ -93,9 +94,9 @@ func main() {
                         post.frontmatter.addTaxonomy(rss.Channels[i].Items[j].Categories[k].Domain, rss.Channels[i].Items[j].Categories[k].Name)
                     }
                     post.Write()
+                    // break
                 }
             }
-            break
         }
     } else {
         println("No filename included")
@@ -164,34 +165,30 @@ func (p Post) Write(){
     f.Sync()
 }
 
-func (p *Post) setContent(content string) string {
+func (p *Post) setContent(content string, convertfrom string, convertto string) string {
 
-    pandocPath, err := exec.LookPath("pandoc")
+    pandocExec, err := exec.LookPath("pandoc")
     check(err)
 
-    cmd := exec.Command(pandocPath, "-f textile", "-t html")
+    cmdArgs := []string{convertfrom, convertto}
+
+    cmd := exec.Command(pandocExec, cmdArgs...)
+
     stdin, err := cmd.StdinPipe()
+    check(err)
+
     stdout, err := cmd.StdoutPipe()
+    err = cmd.Start();
     check(err)
 
-    var buf bytes.Buffer
-    io.Copy(&buf, stdout)
-    // writer := bufio.NewWriter(buf)
-    // defer writer.Flush()
-
-    defer stdin.Close()
     io.WriteString(stdin, content)
+    stdin.Close()
 
-    err = cmd.Run()
-    check(err)
+    buf := new(bytes.Buffer)
+    buf.ReadFrom(stdout)
+    p.content = buf.String()
+    cmd.Wait()
 
-    // go io.Copy(writer, stdout)
-    // cmd.Wait()
-    fmt.Println(string(buf.Bytes()))
-    // fmt.Println(stdout)
-
-    // tmp := compileTextileToHTML(content)
-    // p.content = io.Reader(stdout)
     return p.content
 }
 
