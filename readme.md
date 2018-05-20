@@ -12,8 +12,6 @@ To run after compilation:
 
 Todo:
 
-- ✅ Make a Readme file
-- ❎ Add commandline options to tell pandoc the sequence of conversions you wish to perform.
-- ❎ Include compiled version for easier download.
-
-- [ ] testing signing a commit with gpg
+- [x]  Make a Readme file
+- [ ] Add commandline options to tell pandoc the sequence of conversions you wish to perform.
+- [ ] Include compiled version for easier download.
