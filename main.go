@@ -12,7 +12,6 @@ import (
     "os"
     "os/exec"
     "bytes"
-    // "bufio"
 )
 
 var filename string
@@ -38,22 +37,11 @@ func elapsed(what string) func() {
     }
 }
 
-// func compileTextileToHTML(pandocinput string) pandocoutput string {
-
-
-//     // stdoutpipe := exec.StdoutPipe(pandocoutput)
-//     // cmd.Run()
-
-//     return output
-// }
-
 func main() {
 
     defer elapsed("script")()
 
-
     if filename != "" {
-
         xmlFile, err := os.Open(filename)
         check(err)
 
@@ -72,10 +60,8 @@ func main() {
             // fmt.Println("Channel URL: " + rss.Channels[i].BaseSiteURL)
             // fmt.Println("Channel Publish date: " + rss.Channels[i].PubDate)
 
-
             for j := 0; j < len(rss.Channels[i].Items); j++ {
                 if rss.Channels[i].Items[j].PostType == "post" {
-
                     var post Post
 
                     post.postType = "post"
@@ -94,7 +80,6 @@ func main() {
                         post.frontmatter.addTaxonomy(rss.Channels[i].Items[j].Categories[k].Domain, rss.Channels[i].Items[j].Categories[k].Name)
                     }
                     post.Write()
-                    // break
                 }
             }
         }
@@ -127,21 +112,16 @@ type Item struct {
     Date string `xml:"http://wordpress.org/export/1.2/ post_date_gmt"`
     Description string `xml:"Description"`
     ExpiryDate string
-    // keywords []Taxonomy
-    // LastMod time.Time
     LinkTitle string `xml:"title"`
     PublishDate string `xml:"pubDate"`
     Slug string `xml:"http://wordpress.org/export/1.2/ post_name"`
     Status string `xml:"http://wordpress.org/export/1.2/ status"`
-    // Title string `xml:"title"`
     Url string `xml:"link"`
     Content string `xml:"http://purl.org/rss/1.0/modules/content/ encoded"`
-    // tags []Taxonomy
     Categories []Category `xml:"category"`
 }
 
 type Category struct {
-    // XMLName xml.Name `xml:"category"`
     Domain string `xml:"domain,attr"`
     NiceName string `xml:"nicename,attr"`
     Name string `xml:",cdata"`
@@ -230,4 +210,3 @@ func (f *FrontMatter) addTaxonomy(taxonomyType string, name string) {
         f.Tags = append(f.Tags, name)
     }
 }
-
