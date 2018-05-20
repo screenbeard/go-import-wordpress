@@ -12,5 +12,5 @@ To run after compilation:
 
 Todo:
 
-[] Add commandline options to tell pandoc the sequence of conversions you wish to perform.
-[] Include compiled version for easier download.
+-[] Add commandline options to tell pandoc the sequence of conversions you wish to perform.
+-[] Include compiled version for easier download.
